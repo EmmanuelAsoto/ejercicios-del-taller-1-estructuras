@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Vector-JS Lab</title>
+//emmanuel andres soto peña y Angie lorena sanchez vicaña
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+    }
+    canvas {
+        border: 1px solid black;
+        margin-top: 20px;
+    }
+    .controls {
+        margin: 10px;
+    }
+    .console {
+        margin-top: 15px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+</head>
+<body>
+
+<h1>Vector-JS Lab</h1>
+
+<div class="controls">
+    <h3>Vector A</h3>
+    X: <input type="number" id="ax" value="100">
+    Y: <input type="number" id="ay" value="50">
+
+    <h3>Vector B</h3>
+    X: <input type="number" id="bx" value="50">
+    Y: <input type="number" id="by" value="100">
+</div>
+
+<div class="controls">
+    <button onclick="draw()">Dibujar</button>
+    <button onclick="sumVectors()">Suma</button>
+    <button onclick="scaleVector()">Escalar A</button>
+</div>
+
+<div class="controls">
+    Escalar: <input type="range" id="scale" min="1" max="5" value="1">
+</div>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<div class="console" id="console"></div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function getVectors() {
+    return {
+        A: {
+            x: parseFloat(document.getElementById("ax").value),
+            y: parseFloat(document.getElementById("ay").value)
+        },
+        B: {
+            x: parseFloat(document.getElementById("bx").value),
+            y: parseFloat(document.getElementById("by").value)
+        }
+    };
+}
+
+function drawAxis() {
+    ctx.beginPath();
+    ctx.moveTo(250, 0);
+    ctx.lineTo(250, 500);
+    ctx.moveTo(0, 250);
+    ctx.lineTo(500, 250);
+    ctx.stroke();
+}
+
+function drawVector(v, color) {
+    ctx.beginPath();
+    ctx.moveTo(250, 250);
+    ctx.lineTo(250 + v.x, 250 - v.y);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawAxis();
+
+    const { A, B } = getVectors();
+
+    drawVector(A, "blue");
+    drawVector(B, "red");
+
+    showConsole(A, B);
+}
+
+function sumVectors() {
+    const { A, B } = getVectors();
+
+    const result = {
+        x: A.x + B.x,
+        y: A.y + B.y
+    };
+
+    draw();
+    drawVector(result, "green");
+}
+
+function scaleVector() {
+    const { A } = getVectors();
+    const scale = document.getElementById("scale").value;
+
+    const scaled = {
+        x: A.x * scale,
+        y: A.y * scale
+    };
+
+    draw();
+    drawVector(scaled, "purple");
+}
+
+function dotProduct(A, B) {
+    return A.x * B.x + A.y * B.y;
+}
+
+function magnitude(v) {
+    return Math.sqrt(v.x * v.x + v.y * v.y);
+}
+
+function angle(A, B) {
+    const dot = dotProduct(A, B);
+    const magA = magnitude(A);
+    const magB = magnitude(B);
+
+    return Math.acos(dot / (magA * magB)) * (180 / Math.PI);
+}
+
+function distance(A, B) {
+    return Math.sqrt(Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2));
+}
+
+function showConsole(A, B) {
+    const dot = dotProduct(A, B);
+    const ang = angle(A, B).toFixed(2);
+    const dist = distance(A, B).toFixed(2);
+
+    document.getElementById("console").innerHTML = `
+        <strong>Producto Punto:</strong> ${dot}<br>
+        <strong>Ángulo:</strong> ${ang}°<br>
+        <strong>Distancia:</strong> ${dist}
+    `;
+}
+</script>
+
+</body>
+</html>
