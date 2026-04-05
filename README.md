@@ -1,1 +1,1 @@
-# ejercicios-del-taller-1-estructuras
+# ejercicios-del-taller-estructuras
